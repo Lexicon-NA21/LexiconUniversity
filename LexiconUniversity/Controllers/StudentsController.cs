@@ -8,31 +8,39 @@ using Microsoft.EntityFrameworkCore;
 using LexiconUniversity.Data;
 using LexiconUniversity.Models.Entities;
 using LexiconUniversity.Models.ViewModels;
+using Bogus;
+using AutoMapper;
 
 namespace LexiconUniversity.Controllers
 {
     public class StudentsController : Controller
     {
         private readonly LexiconUniversityContext db;
+        private readonly IMapper mapper;
+        private Faker faker;
 
-        public StudentsController(LexiconUniversityContext context)
+        public StudentsController(LexiconUniversityContext context, IMapper mapper)
         {
             db = context;
+            this.mapper = mapper;
+            faker = new Faker("sv");
         }
 
         // GET: Students
         public async Task<IActionResult> Index()
         {
-            var model = db.Student
-                            .Include(s => s.Adress)
-                            .Select(s => new StudentListViewModel
-                            {
-                                Id = s.Id,
-                                Avatar = s.Avatar,
-                                FullName = s.FullName,
-                                AdressStreet = s.Adress.Street
-                            })
-                            .Take(10);
+            //var model = db.Student
+            //                .Include(s => s.Adress)
+            //                .Select(s => new StudentListViewModel
+            //                {
+            //                    Id = s.Id,
+            //                    Avatar = s.Avatar,
+            //                    FullName = s.FullName,
+            //                    AdressStreet = s.Adress.Street
+            //                })
+            //                .Take(10);
+
+            var model = mapper.ProjectTo<StudentListViewModel>(db.Student).Take(10);
 
             return View(await model.ToListAsync());
         }
@@ -45,8 +53,10 @@ namespace LexiconUniversity.Controllers
                 return NotFound();
             }
 
-            var student = await db.Student
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var student = await mapper
+                .ProjectTo<StudentDetailsViewModel>(db.Student)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
             if (student == null)
             {
                 return NotFound();
@@ -66,15 +76,32 @@ namespace LexiconUniversity.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Avatar,FirstName,LastName,Email")] Student student)
+        public async Task<IActionResult> Create(StudentAddViewModel viewmodel)
         {
             if (ModelState.IsValid)
             {
+                //var student = new Student
+                //{
+                //    Avatar = faker.Internet.Avatar(),
+                //    FirstName = viewmodel.FirstName,
+                //    LastName = viewmodel.LastName,
+                //    Email = viewmodel.Email,
+                //    Adress = new Adress
+                //    {
+                //        Street = viewmodel.AdressStreet,
+                //        City = viewmodel.AdressCity,
+                //        ZipCode = viewmodel.AdressZipCode
+                //    }
+                //};
+
+                var student = mapper.Map<Student>(viewmodel);
+                student.Avatar = faker.Internet.Avatar();
+
                 db.Add(student);
                 await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(student);
+            return View(viewmodel);
         }
 
         // GET: Students/Edit/5

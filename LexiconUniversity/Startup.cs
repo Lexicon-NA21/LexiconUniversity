@@ -30,6 +30,8 @@ namespace LexiconUniversity
 
             services.AddDbContext<LexiconUniversityContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("LexiconUniversityContext")).LogTo(Console.WriteLine, LogLevel.Information));
+
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,7 +58,7 @@ namespace LexiconUniversity
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Students}/{action=Index}/{id?}");
             });
         }
     }
