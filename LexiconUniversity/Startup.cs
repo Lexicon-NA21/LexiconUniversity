@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using LexiconUniversity.Data;
+using Microsoft.Extensions.Logging;
 
 namespace LexiconUniversity
 {
@@ -28,7 +29,7 @@ namespace LexiconUniversity
             services.AddControllersWithViews();
 
             services.AddDbContext<LexiconUniversityContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("LexiconUniversityContext")));
+                    options.UseSqlServer(Configuration.GetConnectionString("LexiconUniversityContext")).LogTo(Console.WriteLine, LogLevel.Information));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
