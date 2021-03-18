@@ -7,22 +7,34 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LexiconUniversity.Data;
 using LexiconUniversity.Models.Entities;
+using LexiconUniversity.Models.ViewModels;
 
 namespace LexiconUniversity.Controllers
 {
     public class StudentsController : Controller
     {
-        private readonly LexiconUniversityContext _context;
+        private readonly LexiconUniversityContext db;
 
         public StudentsController(LexiconUniversityContext context)
         {
-            _context = context;
+            db = context;
         }
 
         // GET: Students
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Student.ToListAsync());
+            var model = db.Student
+                            .Include(s => s.Adress)
+                            .Select(s => new StudentListViewModel
+                            {
+                                Id = s.Id,
+                                Avatar = s.Avatar,
+                                FullName = s.FullName,
+                                AdressStreet = s.Adress.Street
+                            })
+                            .Take(10);
+
+            return View(await model.ToListAsync());
         }
 
         // GET: Students/Details/5
@@ -33,7 +45,7 @@ namespace LexiconUniversity.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Student
+            var student = await db.Student
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (student == null)
             {
@@ -58,8 +70,8 @@ namespace LexiconUniversity.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(student);
-                await _context.SaveChangesAsync();
+                db.Add(student);
+                await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(student);
@@ -73,7 +85,7 @@ namespace LexiconUniversity.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Student.FindAsync(id);
+            var student = await db.Student.FindAsync(id);
             if (student == null)
             {
                 return NotFound();
@@ -97,8 +109,8 @@ namespace LexiconUniversity.Controllers
             {
                 try
                 {
-                    _context.Update(student);
-                    await _context.SaveChangesAsync();
+                    db.Update(student);
+                    await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -124,7 +136,7 @@ namespace LexiconUniversity.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Student
+            var student = await db.Student
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (student == null)
             {
@@ -139,15 +151,15 @@ namespace LexiconUniversity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var student = await _context.Student.FindAsync(id);
-            _context.Student.Remove(student);
-            await _context.SaveChangesAsync();
+            var student = await db.Student.FindAsync(id);
+            db.Student.Remove(student);
+            await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool StudentExists(int id)
         {
-            return _context.Student.Any(e => e.Id == id);
+            return db.Student.Any(e => e.Id == id);
         }
     }
 }
