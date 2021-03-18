@@ -17,11 +17,12 @@ namespace LexiconUniversity.Models.Entities
 
         //Navigation Property
         public ICollection<Enrollment> Enrollments { get; set; }
+        public Adress Adress { get; set; }
 
 
 
-       //Många till många
-       // public ICollection<Course> Courses { get; set; }
+        //Många till många
+        // public ICollection<Course> Courses { get; set; }
 
     }
 }

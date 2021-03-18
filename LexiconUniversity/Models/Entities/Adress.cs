@@ -11,5 +11,10 @@ namespace LexiconUniversity.Models.Entities
         public string Street { get; set; }
         public string City { get; set; }
         public string ZipCode { get; set; }
+
+        public int StudentId { get; set; }
+
+        //Navigation prop
+        public Student Student { get; set; }
     }
 }
