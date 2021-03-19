@@ -12,6 +12,7 @@ namespace LexiconUniversity.Models.ViewModels
         [StringLength(20)]
         public string FirstName { get; set; }
 
+        [CheckName]
         public string LastName { get; set; }
 
         public string Email { get; set; }

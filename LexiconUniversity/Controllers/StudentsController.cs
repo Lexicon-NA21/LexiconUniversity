@@ -10,6 +10,7 @@ using LexiconUniversity.Models.Entities;
 using LexiconUniversity.Models.ViewModels;
 using Bogus;
 using AutoMapper;
+using LexiconUniversity.Filters;
 
 namespace LexiconUniversity.Controllers
 {
@@ -46,21 +47,15 @@ namespace LexiconUniversity.Controllers
         }
 
         // GET: Students/Details/5
+        [RequiredFilter("id")]
+        [ModelNotNull]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var student = await mapper
                 .ProjectTo<StudentDetailsViewModel>(db.Student)
                 .FirstOrDefaultAsync(s => s.Id == id);
 
-            if (student == null)
-            {
-                return NotFound();
-            }
+            student = null;
 
             return View(student);
         }
