@@ -38,5 +38,16 @@ namespace LexiconUniversity.Data
                      e => e.HasOne(e => e.Student).WithMany(s => s.Enrollments));
         }
 
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    base.OnConfiguring(optionsBuilder);
+
+        //    optionsBuilder.UseSqlServer()
+        //                   .LogTo()
+        //}
+
+        public DbSet<LexiconUniversity.Models.Entities.Course> Course { get; set; }
+
     }
 }
