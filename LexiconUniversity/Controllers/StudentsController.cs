@@ -30,6 +30,7 @@ namespace LexiconUniversity.Controllers
         // GET: Students
         public async Task<IActionResult> Index()
         {
+            throw new Exception();
             //var model = db.Student
             //                .Include(s => s.Adress)
             //                .Select(s => new StudentListViewModel
@@ -54,8 +55,6 @@ namespace LexiconUniversity.Controllers
             var student = await mapper
                 .ProjectTo<StudentDetailsViewModel>(db.Student)
                 .FirstOrDefaultAsync(s => s.Id == id);
-
-            student = null;
 
             return View(student);
         }

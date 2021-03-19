@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using LexiconUniversity.Data;
 using Microsoft.Extensions.Logging;
+using LexiconUniversity.Filters;
+using LexiconUniversity.Middleware;
 
 namespace LexiconUniversity
 {
@@ -27,6 +29,8 @@ namespace LexiconUniversity
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+           // services.AddControllersWithViews(opt => 
+                           // opt.Filters.Add(typeof(ModelIsValid)));
 
             services.AddDbContext<LexiconUniversityContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("LexiconUniversityContext")).LogTo(Console.WriteLine, LogLevel.Information));
@@ -47,6 +51,9 @@ namespace LexiconUniversity
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseExceptionMiddleware();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
