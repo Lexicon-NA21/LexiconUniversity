@@ -22,7 +22,7 @@ namespace LexiconUniversity.Models.Entities
 
 
         //Många till många
-        // public ICollection<Course> Courses { get; set; }
+        public ICollection<Course> Courses { get; set; }
 
     }
 }

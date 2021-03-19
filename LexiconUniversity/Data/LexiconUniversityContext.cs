@@ -15,5 +15,28 @@ namespace LexiconUniversity.Data
         {
         }
 
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    base.OnConfiguring(optionsBuilder);
+
+        //    optionsBuilder.UseSqlServer()
+        //                   .LogTo()
+        //}
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // modelBuilder.Entity<Enrollment>().HasKey(e => new { e.StudentId, e.CourseId });
+
+            modelBuilder.Entity<Student>()
+                 .HasMany(s => s.Courses)
+                 .WithMany(c => c.Students)
+                 .UsingEntity<Enrollment>(
+                     e => e.HasOne(e => e.Course).WithMany(c => c.Enrollments),
+                     e => e.HasOne(e => e.Student).WithMany(s => s.Enrollments));
+        }
+
     }
 }

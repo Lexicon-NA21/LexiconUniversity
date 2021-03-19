@@ -15,6 +15,6 @@ namespace LexiconUniversity.Models.Entities
 
 
         //Många till många
-        //public ICollection<Student> Students { get; set; }
+        public ICollection<Student> Students { get; set; }
     }
 }
