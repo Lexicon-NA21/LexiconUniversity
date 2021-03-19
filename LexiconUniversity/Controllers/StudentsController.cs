@@ -30,7 +30,7 @@ namespace LexiconUniversity.Controllers
         // GET: Students
         public async Task<IActionResult> Index()
         {
-            throw new Exception();
+            //throw new Exception();
             //var model = db.Student
             //                .Include(s => s.Adress)
             //                .Select(s => new StudentListViewModel
